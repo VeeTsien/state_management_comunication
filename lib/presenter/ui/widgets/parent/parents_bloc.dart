@@ -1,10 +1,13 @@
 import 'package:bloc/bloc.dart';
 import 'package:state_management_comunication/data/memory_db.dart';
 import 'package:state_management_comunication/domain/entities/parent.dart';
+import 'package:state_management_comunication/presenter/ui/communication_bloc.dart';
 import 'package:state_management_comunication/presenter/ui/widgets/parent/parent_state.dart';
 import 'package:collection/collection.dart';
 
 class ParentBloc extends Cubit<ParentState> {
+
+  final CommunicationBloc communicationBloc = CommunicationBloc.instance;
 
   ParentBloc._(parent) : super(ParentState(parent: parent.copy()));
 
@@ -26,6 +29,7 @@ class ParentBloc extends Cubit<ParentState> {
 
     var newState = state.copyWith(parent: parent.copy());
     emit(newState);
+    communicationBloc.emit(CommunicationEvent.childAdded());
   }
 
   void removeChild() {
@@ -35,5 +39,6 @@ class ParentBloc extends Cubit<ParentState> {
 
     var newState = state.copyWith(parent: parent.copy());
     emit(newState);
+    communicationBloc.emit(CommunicationEvent.childAdded());
   }
 }
