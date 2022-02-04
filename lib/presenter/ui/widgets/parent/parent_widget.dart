@@ -8,13 +8,14 @@ import 'package:state_management_comunication/presenter/ui/widgets/parent/parent
 
 class ParentWidget extends StatelessWidget {
 
+  final Parent parent;
 
-  const ParentWidget({Key? key}) : super(key: key);
+  const ParentWidget({Key? key, required this.parent}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ParentBloc>(
-      create: (context) => ParentBloc(),
+      create: (context) => ParentBloc.getInstance(parent),
       child: Container(
         margin: const EdgeInsets.all(16),
         decoration: BoxDecoration(

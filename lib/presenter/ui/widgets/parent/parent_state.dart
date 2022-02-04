@@ -5,18 +5,9 @@ class ParentState{
 
   ParentState({required this.parent});
 
-  ParentState copy() {
-    var copy = parent.copy();
-    return ParentState(parent: copy);
+  ParentState copyWith({
+    Parent? parent
+  }) {
+    return ParentState(parent: parent ?? this.parent.copy());
   }
-
-  @override
-  bool operator ==(Object other) {
-    if(other is ParentState == false) return false;
-    other as ParentState;
-    return parent.children.length == other.parent.children.length;
-  }
-
-  @override
-  int get hashCode => parent.children.hashCode;
 }

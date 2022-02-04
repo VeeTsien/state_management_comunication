@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:state_management_comunication/presenter/ui/widgets/parent/parent_widget.dart';
-
 import 'home_bloc.dart';
 import 'home_state.dart';
 
@@ -35,7 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: homeState.parents
-                    .map<Widget>((parent) => const ParentWidget()).toList()
+                    .map<Widget>((parent) => ParentWidget(parent: parent)).toList()
                     ..add(const SizedBox(height: 56 + 16)),
                 );
               }
