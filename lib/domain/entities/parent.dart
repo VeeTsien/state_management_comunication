@@ -1,33 +1,24 @@
+import 'package:equatable/equatable.dart';
+
 import 'child.dart';
 
-class Parent {
+class Parent extends Equatable {
   final int id;
+  final String name;
   final List<Child> _children;
+
   get children => _children;
 
-  Parent({required this.id, List<Child>? children}):
-    _children = children ??= [];
+  Parent({required this.id, required this.name, List<Child>? children})
+      : _children = children ??= [];
 
-  addChild(){
-    _children.add(const Child());
-  }
-
-  removeChild(){
-    if(_children.isNotEmpty) {
-      _children.removeLast();
-    }
-  }
-
-  Parent copy() =>
-    Parent(id: id, children: List.of(_children));
+  Parent copy() => Parent(id: id, children: List.of(_children), name: name);
 
   @override
-  bool operator ==(Object other) {
-    if(other is Parent == false) return false;
-    other as Parent;
-    return other.id == id;
-  }
+  List<Object> get props => [id, name, _children];
 
   @override
-  int get hashCode => id.hashCode;
+  String toString() {
+    return 'Parent{id: $id, name: $name, _children: $_children}';
+  }
 }
