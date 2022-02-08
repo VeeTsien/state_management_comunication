@@ -24,17 +24,17 @@ class ParentsBuilder extends StatelessWidget {
                 create: (context) => ChildrenCubit(
                     selectedParent: parent,
                     parentsCubit: context.read<ParentsCubit>()),
-                child: Container(
-                  height: 200,
-                  child: BlocBuilder<ChildrenCubit, ChildrenState>(
-                    builder: (context, childrenState) {
-                      return Column(
+                child: BlocBuilder<ChildrenCubit, ChildrenState>(
+                  builder: (context, childrenState) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Column(
                         children: [
                           Header(parent: parent),
                           Container(
                             decoration: BoxDecoration(
                                 border: Border.all(color: Colors.blue)),
-                            height: 150,
+                            height: childrenState.children.length * 30,
                             child: ListView.builder(
                                 itemCount: childrenState.children.length,
                                 itemBuilder: (context, idx) {
@@ -54,9 +54,9 @@ class ParentsBuilder extends StatelessWidget {
                                 }),
                           ),
                         ],
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
                 ));
           }),
     );
