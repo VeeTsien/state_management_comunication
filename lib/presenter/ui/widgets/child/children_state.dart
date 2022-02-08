@@ -2,7 +2,7 @@ part of 'children_cubit.dart';
 
 class ChildrenState {
   final List<Child> children;
-  const ChildrenState({this.children = const <Child>[]});
+  const ChildrenState({required this.children});
 
   @override
   String toString() {

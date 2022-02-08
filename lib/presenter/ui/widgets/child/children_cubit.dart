@@ -1,23 +1,34 @@
 import 'package:bloc/bloc.dart';
 import 'package:state_management_comunication/domain/entities/child.dart';
 import 'package:state_management_comunication/domain/entities/parent.dart';
+import 'package:state_management_comunication/presenter/ui/widgets/parent/parents_cubit.dart';
 
 part 'children_state.dart';
 
 class ChildrenCubit extends Cubit<ChildrenState> {
   final Parent selectedParent;
+  final ParentsCubit parentsCubit;
 
-  ChildrenCubit({required this.selectedParent})
-      : super(const ChildrenState(children: []));
+  ChildrenCubit({required this.selectedParent, required this.parentsCubit})
+      : super(ChildrenState(children: selectedParent.children));
 
   void addChild(Child child) async {
     await selectedParent.children.add(child);
-    emit(ChildrenState(children: selectedParent.children));
+    emit(ChildrenState(
+        children: selectedParent
+            .copyWith(children: selectedParent.children)
+            .children));
+
+    parentsCubit.updateParents(selectedParent);
   }
 
   void removeChild(Child child) async {
     await selectedParent.children.remove(child);
-    emit(ChildrenState(children: selectedParent.children));
+    emit(ChildrenState(
+        children: selectedParent
+            .copyWith(children: selectedParent.children)
+            .children));
+    parentsCubit.updateParents(selectedParent);
   }
 
   void updateChild(Child newChild) {
@@ -30,6 +41,7 @@ class ChildrenCubit extends Cubit<ChildrenState> {
     if (_originalChild != null) {
       removeChild(_originalChild!);
       addChild(newChild);
+      parentsCubit.updateParents(selectedParent);
     } else {
       throw 'Child $_originalChild doens\'t exist.';
     }

@@ -14,4 +14,16 @@ class Child extends Equatable {
   String toString() {
     return 'Child{parentID: $parentID, uID: $uID, name: $name}';
   }
+
+  Child copyWith({
+    int? parentID,
+    int? uID,
+    String? name,
+  }) {
+    return Child(
+      parentID: parentID ?? this.parentID,
+      uID: uID ?? this.uID,
+      name: name ?? this.name,
+    );
+  }
 }

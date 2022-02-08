@@ -12,13 +12,23 @@ class Parent extends Equatable {
   Parent({required this.id, required this.name, List<Child>? children})
       : _children = children ??= [];
 
-  Parent copy() => Parent(id: id, children: List.of(_children), name: name);
-
   @override
   List<Object> get props => [id, name, _children];
 
   @override
   String toString() {
     return 'Parent{id: $id, name: $name, _children: $_children}';
+  }
+
+  Parent copyWith({
+    int? id,
+    String? name,
+    List<Child>? children,
+  }) {
+    return Parent(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      children: children ?? this._children,
+    );
   }
 }

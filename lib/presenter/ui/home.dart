@@ -1,7 +1,6 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:random_string/random_string.dart';
 import 'package:state_management_comunication/domain/entities/parent.dart';
 import 'package:state_management_comunication/presenter/ui/widgets/parent/parent_widget.dart';
 import 'package:state_management_comunication/presenter/ui/widgets/parent/parents_cubit.dart';
@@ -16,13 +15,14 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-var _totalChildren = 0.0;
-
 class _MyHomePageState extends State<MyHomePage> {
+  double _totalChildren = 0.0;
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ParentsCubit, ParentsState>(
       builder: (context, parentsState) {
+        _totalChildren = 0.0;
         parentsState.parents.forEach((parent) {
           _totalChildren += parent.children.length;
         });
@@ -30,23 +30,25 @@ class _MyHomePageState extends State<MyHomePage> {
             appBar: AppBar(
               title: Text('Total children: $_totalChildren'),
             ),
-            body: Center(
+            body: Align(
+              alignment: Alignment.topCenter,
               child: ParentsBuilder(
                 parents: parentsState.parents,
               ),
             ),
-            floatingActionButton: const PlusParent());
+            floatingActionButton: PlusParent());
       },
     );
   }
 }
 
 class PlusParent extends StatelessWidget {
-  const PlusParent({Key? key}) : super(key: key);
+  PlusParent({Key? key}) : super(key: key);
+
+  int _id = randomBetween(0, 10000);
 
   @override
   Widget build(BuildContext context) {
-    int _id = random(1, 100000000);
     return FloatingActionButton(
       onPressed: () {
         context
@@ -57,8 +59,4 @@ class PlusParent extends StatelessWidget {
       child: const Icon(Icons.add),
     );
   }
-}
-
-int random(min, max) {
-  return min + math.Random().nextInt(max - min);
 }

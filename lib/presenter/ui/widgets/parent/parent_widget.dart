@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:random_string/random_string.dart';
 import 'package:state_management_comunication/domain/entities/child.dart';
 import 'package:state_management_comunication/domain/entities/parent.dart';
 import 'package:state_management_comunication/presenter/ui/widgets/child/children_cubit.dart';
-
-import '../../home.dart';
+import 'package:state_management_comunication/presenter/ui/widgets/parent/parents_cubit.dart';
 
 class ParentsBuilder extends StatelessWidget {
   final List<Parent> parents;
@@ -15,22 +15,26 @@ class ParentsBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.all(16),
-      decoration: BoxDecoration(border: Border.all(color: Colors.blue)),
+      height: parents.length * 200,
       child: ListView.builder(
           itemCount: parents.length,
           itemBuilder: (BuildContext context, int idx) {
             Parent parent = parents[idx];
             return BlocProvider(
-                create: (context) => ChildrenCubit(selectedParent: parent),
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.2,
+                create: (context) => ChildrenCubit(
+                    selectedParent: parent,
+                    parentsCubit: context.read<ParentsCubit>()),
+                child: Container(
+                  height: 200,
                   child: BlocBuilder<ChildrenCubit, ChildrenState>(
                     builder: (context, childrenState) {
                       return Column(
                         children: [
                           Header(parent: parent),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.1,
+                          Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.blue)),
+                            height: 150,
                             child: ListView.builder(
                                 itemCount: childrenState.children.length,
                                 itemBuilder: (context, idx) {
@@ -40,11 +44,15 @@ class ParentsBuilder extends StatelessWidget {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(_child.name),
-                                      MinusChild(child: _child),
+                                      MinusSign(
+                                        onTapped: () => context
+                                            .read<ChildrenCubit>()
+                                            .removeChild(_child),
+                                      ),
                                     ],
                                   );
                                 }),
-                          )
+                          ),
                         ],
                       );
                     },
@@ -64,7 +72,11 @@ class Header extends StatelessWidget {
     return Container(
         color: Colors.blue,
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            MinusSign(
+                onTapped: () =>
+                    context.read<ParentsCubit>().removeParent(parent: parent)),
             const SizedBox(width: 16),
             Expanded(
                 child: Text(
@@ -86,7 +98,7 @@ class PlusChild extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     int _randomID =
-        int.parse(parent.id.toString() + random(2, 10000).toString());
+        int.parse(parent.id.toString() + randomBetween(0, 10000).toString());
 
     return GestureDetector(
       onTap: () {
@@ -116,9 +128,8 @@ class PlusChild extends StatelessWidget {
             });
       },
       child: Container(
-        margin: const EdgeInsets.only(bottom: 1, right: 1),
         color: Colors.white,
-        padding: const EdgeInsets.all(8.0),
+        margin: const EdgeInsets.all(4.0),
         child: const Icon(
           Icons.add,
           size: 16,
@@ -128,18 +139,17 @@ class PlusChild extends StatelessWidget {
   }
 }
 
-class MinusChild extends StatelessWidget {
-  final Child child;
-  const MinusChild({Key? key, required this.child}) : super(key: key);
+class MinusSign extends StatelessWidget {
+  final VoidCallback onTapped;
+  const MinusSign({Key? key, required this.onTapped}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => context.read<ChildrenCubit>().removeChild(child),
+      onTap: onTapped,
       child: Container(
-        margin: const EdgeInsets.only(bottom: 1),
         color: Colors.white,
-        padding: const EdgeInsets.all(8.0),
+        margin: const EdgeInsets.all(4.0),
         child: const Icon(
           Icons.remove,
           size: 16,

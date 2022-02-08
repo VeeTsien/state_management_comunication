@@ -5,7 +5,8 @@ import 'package:state_management_comunication/presenter/ui/widgets/parent/parent
 class ParentsCubit extends Cubit<ParentsState> {
   late final List<Parent> parentsRepo;
 
-  ParentsCubit({required this.parentsRepo}) : super(const ParentsState());
+  ParentsCubit({required this.parentsRepo})
+      : super(ParentsState(parents: parentsRepo));
 
   void addParent({required Parent parent}) {
     parentsRepo.add(parent);
@@ -18,15 +19,20 @@ class ParentsCubit extends Cubit<ParentsState> {
   }
 
   void updateParents(Parent newParent) {
-    Parent? _originalParent;
-    parentsRepo.map((parent) =>
-        parent.id == newParent.id ? _originalParent = parent : null);
+    bool parentExists =
+        parentsRepo.map((parent) => parent.id).toList().contains(newParent.id);
 
-    if (_originalParent != null) {
-      removeParent(parent: _originalParent!);
-      addParent(parent: newParent);
+    print(parentsRepo.map((parent) => parent.id).toList());
+
+    if (parentExists) {
+      parentsRepo.forEach((parent) {
+        if (parent.id == newParent.id) {
+          parentsRepo.remove(parent);
+          addParent(parent: newParent);
+        }
+      });
     } else {
-      throw 'Parent $_originalParent doens\'t exist.';
+      throw 'Parent doens\'t exist.';
     }
   }
 
